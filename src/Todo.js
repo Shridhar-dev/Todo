@@ -37,6 +37,14 @@ class Todo extends React.Component{
                         }
                     })
                 }
+                else if(change.type === "modified"){
+                    this.setState(prevState=>{
+                        return{
+                            name:[...prevState.name,change.doc],
+                            loading:false
+                        }
+                    })
+                }
             })
         })
     }
@@ -50,10 +58,10 @@ class Todo extends React.Component{
         indexer = e.target.parentElement.getAttribute("dataId");
         arr_indexer = e.target.parentElement.getAttribute("id");
         db.collection('Todoitems').doc(indexer).delete();
-        let narray = this.state.name
-        this.setState({
-            name:narray.splice(arr_indexer,1) ,
-        }) 
+        
+        this.setState(prevState=>({
+            name:prevState.name.filter((_, i) => i !== arr_indexer),
+        }) )
     }
 
     /* Updating State variables relating to forms  */
@@ -76,15 +84,17 @@ class Todo extends React.Component{
         }
         else if(e.target.name === "edb"){
             indexer = e.target.parentElement.getAttribute("dataId");
+            arr_indexer = e.target.parentElement.getAttribute("id");
             this.setState({
                 eformdisplay:'inline'
             })
         }
         else if(e.target.name === "editbutton"){ 
             db.collection('Todoitems').doc(indexer).update({Item:this.state.eformval})
-            this.setState({
+            this.setState(prevState=>({
+                name:prevState.name.filter((_, i) => i !== arr_indexer),
                 eformdisplay:'none'
-            })
+            }))
         }
     }
     
