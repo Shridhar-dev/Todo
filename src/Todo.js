@@ -1,5 +1,6 @@
 import React from 'react'
 import db from './firebase'
+import Item from './Item'
 
 let indexer;
 let arr_indexer;
@@ -60,7 +61,7 @@ class Todo extends React.Component{
         db.collection('Todoitems').doc(indexer).delete();
         
         this.setState(prevState=>({
-            name:prevState.name.filter((_, i) => i !== arr_indexer),
+            name:prevState.name.filter((_, i) => i != arr_indexer),
         }) )
     }
 
@@ -92,7 +93,7 @@ class Todo extends React.Component{
         else if(e.target.name === "editbutton"){ 
             db.collection('Todoitems').doc(indexer).update({Item:this.state.eformval})
             this.setState(prevState=>({
-                name:prevState.name.filter((_, i) => i !== arr_indexer),
+                name:prevState.name.filter((_, i) => i != arr_indexer),
                 eformdisplay:'none'
             }))
         }
@@ -106,11 +107,13 @@ class Todo extends React.Component{
 
         const items = this.state.name.map((d)=>{
             return(
-            <li dataId={d.id }id={this.state.name.indexOf(d) }>
-                <h2>{d.data().Item}</h2>
-                <button onClick={this.onDelete} >X</button>
-                <button name='edb' onClick={this.handleSubmit} >Edit</button>
-            </li>
+            <Item 
+                dataid={d.id}
+                id={this.state.name.indexOf(d)}
+                name={d.data().Item}
+                funcSub={this.handleSubmit}
+                funcDel={this.onDelete}
+            />
             )
         }) 
         
